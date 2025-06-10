@@ -2,10 +2,20 @@ import { RouterModule } from '@nestjs/core';
 import { AuthModule } from 'src/features/auth/auth.module';
 import { BranchModule } from 'src/features/branch/branch.module';
 import { CityModule } from 'src/features/city/city.module';
+import { InventoryHistoryModule } from 'src/features/inventory-history/inventory-history.module';
+import { InventoryModule } from 'src/features/inventory/inventory.module';
+import { ProductCategoryModule } from 'src/features/product-category/product-category.module';
+import { ProductImageModule } from 'src/features/product-image/product-image.module';
+import { ProductModule } from 'src/features/product/product.module';
 import { ProvinceModule } from 'src/features/province/province.module';
 import { StaffModule } from 'src/features/staff/staff.module';
 import { SubdistrictModule } from 'src/features/subdistrict/subdistrict.module';
+import { SupplierBankAccountModule } from 'src/features/supplier-bank-account/supplier-bank-account.module';
+import { SupplierQuotationDetailModule } from 'src/features/supplier-quotation-detail/supplier-quotation-detail.module';
+import { SupplierQuotationModule } from 'src/features/supplier-quotation/supplier-quotation.module';
+import { SupplierModule } from 'src/features/supplier/supplier.module';
 import { UserModule } from 'src/features/user/user.module';
+import { WarehouseModule } from 'src/features/warehouse/warehouse.module';
 
 export default RouterModule.register([
   {
@@ -52,46 +62,46 @@ export default RouterModule.register([
           //     path: 'brands',
           //     module: BrandsAdminModule,
           //   },
-          //   {
-          //     path: 'product-categories',
-          //     module: ProductCategoryModule,
-          //   },
-          //   {
-          //     path: 'products',
-          //     module: ProductModule,
-          //     children: [
-          //       {
-          //         path: ':id/images',
-          //         module: ProductImageModule,
-          //       },
-          //     ],
-          //   },
-          //   {
-          //     path: 'warehouses',
-          //     module: WarehousesAdminModule,
-          //   },
-          //   {
-          //     path: 'serialize-items',
-          //     module: SerializeItemsAdminModule,
-          //   },
-          //   {
-          //     path: 'inventories',
-          //     module: InventoriesAdminModule,
-          //   },
-          //   {
-          //     path: 'inventory-histories',
-          //     module: InventoryHistoriesAdminModule,
-          //   },
-          //   {
-          //     path: 'suppliers',
-          //     module: SuppliersAdminModule,
-          //     children: [
-          //       {
-          //         path: ':supplierId/details',
-          //         module: SupplierBankAccountsAdminModule,
-          //       },
-          //     ],
-          // //   },
+          {
+            path: 'product-categories',
+            module: ProductCategoryModule,
+          },
+          {
+            path: 'products',
+            module: ProductModule,
+            children: [
+              {
+                path: ':id/images',
+                module: ProductImageModule,
+              },
+            ],
+          },
+          {
+            path: 'warehouses',
+            module: WarehouseModule,
+          },
+          // {
+          //   path: 'serialize-items',
+          //   module: SerializeItemModule,
+          // },
+          {
+            path: 'inventories',
+            module: InventoryModule,
+          },
+          {
+            path: 'inventory-histories',
+            module: InventoryHistoryModule,
+          },
+          {
+            path: 'suppliers',
+            module: SupplierModule,
+            children: [
+              {
+                path: ':supplierId/details',
+                module: SupplierBankAccountModule,
+              },
+            ],
+          },
           //   {
           //     path: 'purchase-orders',
           //     module: PurchaseOrdersAdminModule,
@@ -140,16 +150,16 @@ export default RouterModule.register([
           //       },
           //     ],
           // //   },
-          //   {
-          //     path: 'supplier-quotations',
-          //     module: SupplierQuotationsAdminModule,
-          //     children: [
-          //       {
-          //         path: ':supplierQuotationId/details',
-          //         module: SupplierQuotationDetailsAdminModule,
-          //       },
-          //     ],
-          //   },
+          {
+            path: 'supplier-quotations',
+            module: SupplierQuotationModule,
+            children: [
+              {
+                path: ':supplierQuotationId/details',
+                module: SupplierQuotationDetailModule,
+              },
+            ],
+          },
           //   {
           //     path: 'purchase-requests',
           //     module: PurchaseRequestsAdminModule,

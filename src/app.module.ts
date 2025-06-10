@@ -17,6 +17,17 @@ import { ProvinceModule } from './features/province/province.module';
 import { SubdistrictModule } from './features/subdistrict/subdistrict.module';
 import { BranchModule } from './features/branch/branch.module';
 import routerConfig from './configs/router.config';
+import { InventoryHistoryModule } from './features/inventory-history/inventory-history.module';
+import { InventoryTransactionModule } from './features/inventory-transaction/inventory-transaction.module';
+import { InventoryModule } from './features/inventory/inventory.module';
+import { ProductCategoryModule } from './features/product-category/product-category.module';
+import { ProductImageModule } from './features/product-image/product-image.module';
+import { ProductModule } from './features/product/product.module';
+import { SupplierQuotationDetailModule } from './features/supplier-quotation-detail/supplier-quotation-detail.module';
+import { SupplierQuotationModule } from './features/supplier-quotation/supplier-quotation.module';
+import { SupplierModule } from './features/supplier/supplier.module';
+import { WarehouseModule } from './features/warehouse/warehouse.module';
+import { SupplierBankAccountModule } from './features/supplier-bank-account/supplier-bank-account.module';
 
 @Module({
   imports: [
@@ -35,18 +46,17 @@ import routerConfig from './configs/router.config';
     UserModule,
     // CompaniesModule,
     BranchModule,
-    // UsersAdminModule,
     // CurrenciesAdminModule,
     // ExchangeRatesAdminModule,
     // BrandsAdminModule,
-    // ProductCategoriesAdminModule,
-    // ProductAdminModule,
-    // ProductImageAdminModule,
-    // WarehousesAdminModule,
+    ProductCategoryModule,
+    ProductModule,
+    ProductImageModule,
+    WarehouseModule,
     // SerializeItemsAdminModule,
-    // InventoriesAdminModule,
-    // InventoryHistoriesAdminModule,
-    // SuppliersAdminModule,
+    InventoryModule,
+    InventoryHistoryModule,
+    SupplierModule,
     // PurchaseOrdersAdminModule,
     // PurchaseOrderDetailsAdminModule,
     // PurchaseInvoicesAdminModule,
@@ -54,8 +64,8 @@ import routerConfig from './configs/router.config';
     // PurchaseInvoiceDetailsAdminModule,
     // GoodsReceiptsAdminModule,
     // GoodsReceiptDetailsAdminModule,
-    // SupplierQuotationsAdminModule,
-    // SupplierQuotationDetailsAdminModule,
+    SupplierQuotationModule,
+    SupplierQuotationDetailModule,
     // PurchaseRequestsAdminModule,
     // PurchaseRequestDetailsAdminModule,
     // PurchasePaymentsAdminModule,
@@ -64,9 +74,9 @@ import routerConfig from './configs/router.config';
     // PurchaseNoteDetailsAdminModule,
     // PurchaseReturnsAdminModule,
     // PurchaseReturnDetailsAdminModule,
-    // InventoryTransactionsAdminModule,
+    InventoryTransactionModule,
     // StockMovementsAdminModule,
-    // SupplierBankAccountsAdminModule,
+    SupplierBankAccountModule,
     // PurchasePlansAdminModule,
     // PlanImplementsAdminModule,
     // CustomerAddressesAdminModule,
@@ -79,7 +89,6 @@ import routerConfig from './configs/router.config';
     ProvinceModule,
     CityModule,
     SubdistrictModule,
-    // ProductModule,
     // CompaniesPublicModule,
     // AccountTypesAdminModule,
     // CoaGroupsAdminModule,
@@ -92,7 +101,6 @@ import routerConfig from './configs/router.config';
     // TaskSchedulesAdminModule,
     // ScheduleModule.forRoot(),
     // BrandsModule,
-    // ProductCategoriesModule,
     // NotificationModule,
     // TransactionDetailsAdminModule,
     // SchoolsAdminModule,
