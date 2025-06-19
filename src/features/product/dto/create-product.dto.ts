@@ -5,10 +5,10 @@ export class CreateProductDto {
   base_price: number;
   status: number;
   uom: string;
-  minimal_stock_level: number;
   valuation_method: number;
   product_category_id: number;
-  brand_id: number;
+  brand: string;
+  quantity: number;
   product_images: Array<{
     url: string;
     file_path: string;

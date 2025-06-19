@@ -31,5 +31,5 @@ export class StaffUnit extends Model {
   staff: Staff;
 
   @BelongsTo(() => Branch)
-  branches: Branch;
+  branch: Branch;
 }

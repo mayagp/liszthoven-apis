@@ -1,18 +1,10 @@
 import * as Joi from 'joi';
 
 export const createSupplierSchema = Joi.object({
-  name: Joi.string().required(),
-  address: Joi.string().required(),
-  contact_no: Joi.string().required(),
-  pic: Joi.string().required(),
+  user_id: Joi.number().required(),
+  total_payable: Joi.number().allow('', null),
   tax_no: Joi.string().allow('', null),
-  supplier_bank_accounts: Joi.array()
-    .items(
-      Joi.object({
-        account_no: Joi.string().required(),
-        bank: Joi.string().required(),
-        swift_code: Joi.string().required().allow(''),
-      }),
-    )
-    .empty(),
+  account_no: Joi.string().required(),
+  bank: Joi.string().allow('', null),
+  swift_code: Joi.string().allow('', null),
 }).options({ abortEarly: false });

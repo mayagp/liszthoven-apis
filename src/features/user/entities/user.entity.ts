@@ -7,6 +7,7 @@ import {
   Model,
 } from 'sequelize-typescript';
 import { Staff } from 'src/features/staff/entities/staff.entity';
+import { Supplier } from 'src/features/supplier/entities/supplier.entity';
 
 @Table({
   timestamps: true,
@@ -35,18 +36,15 @@ export class User extends Model {
   @Column(DataType.STRING)
   email: string;
 
-  @Column(DataType.TINYINT)
-  gender: number;
-
   @Column(DataType.STRING)
   username: string;
 
   @Column(DataType.STRING)
   password: string;
 
-  @Column(DataType.DATE)
-  birth_date: Date;
-
   @HasOne(() => Staff)
   staff: Staff;
+
+  @HasOne(() => Supplier)
+  supplier: Supplier;
 }

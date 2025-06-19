@@ -16,6 +16,14 @@ module.exports = {
           key: 'id',
         },
       },
+      branch_id: {
+        type: Sequelize.BIGINT,
+        allowNull: true,
+        references: {
+          model: 'branches',
+          key: 'id',
+        },
+      },
       role: {
         type: Sequelize.TINYINT,
         allowNull: false,

@@ -30,7 +30,7 @@ export class SupplierQuotationService {
       this.supplierQuotationModel,
       query,
     )
-      .load('supplier')
+      .load('supplier.user')
       .getResult();
 
     const result = {
@@ -61,6 +61,7 @@ export class SupplierQuotationService {
           },
           {
             association: 'supplier',
+            include: [{ association: 'user' }],
           },
         ],
       });
@@ -373,7 +374,7 @@ export class SupplierQuotationService {
         <div class="grid grid-cols-2 gap-4 py-4 text-sm">
           <div>
             <p class="font-semibold text-[#053742]">No. Quotation : ${data.quotation_no}</p>
-            <p>Supplier : ${data.supplier.name}</p>
+            <p>Supplier : ${data.supplier.tax_no}</p>
           </div>
         </div>
 

@@ -10,6 +10,8 @@ export const createProductSchema = Joi.object({
   minimal_stock_level: Joi.number().allow(null, ''),
   status: Joi.number().required(),
   valuation_method: Joi.number().required(),
+  brand: Joi.string().required(),
+  quantity: Joi.number().required(),
   product_category_id: Joi.number()
     .required()
     .external(async (value) => {
@@ -37,33 +39,6 @@ export const createProductSchema = Joi.object({
 
       return value;
     }),
-  //   brand_id: Joi.number()
-  //     .required()
-  //     .external(async (value) => {
-  //       const brand = await Brand.findOne({
-  //         where: { id: value },
-  //       });
-  //       if (!brand) {
-  //         throw new Joi.ValidationError(
-  //           'any.brand-not-found',
-  //           [
-  //             {
-  //               message: 'Brand not found',
-  //               path: ['brand_id'],
-  //               type: 'any.brand-not-found',
-  //               context: {
-  //                 key: 'brand_id',
-  //                 label: 'brand_id',
-  //                 value,
-  //               },
-  //             },
-  //           ],
-  //           value,
-  //         );
-  //       }
-
-  //       return value;
-  //     }),
   product_images: Joi.array().items(
     Joi.object({
       is_default: Joi.boolean().required(),

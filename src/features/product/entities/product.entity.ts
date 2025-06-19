@@ -85,10 +85,10 @@ export class Product extends Model {
   uom: string;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     allowNull: true,
   })
-  minimal_stock_level: number;
+  brand: string;
 
   @BelongsTo(() => ProductCategory)
   product_category: ProductCategory;

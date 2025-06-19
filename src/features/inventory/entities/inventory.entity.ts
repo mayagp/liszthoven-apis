@@ -7,7 +7,9 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
+import { InventoryInTransaction } from 'src/features/inventory-transaction/entities/inventory-in-transaction.entity';
 import { Product } from 'src/features/product/entities/product.entity';
+import { SerializeItem } from 'src/features/serialize-item/entities/serialize-item.entity';
 import { Warehouse } from 'src/features/warehouse/entities/warehouse.entity';
 
 @Table({
@@ -31,8 +33,8 @@ export class Inventory extends Model {
   @Column(DataType.INTEGER)
   quantity: number;
 
-  //   @HasMany(() => SerializeItem)
-  //   serialize_items: SerializeItem[];
+  @HasMany(() => SerializeItem)
+  serialize_items: SerializeItem[];
 
   @BelongsTo(() => Warehouse)
   warehouse: Warehouse;
@@ -40,6 +42,6 @@ export class Inventory extends Model {
   @BelongsTo(() => Product)
   product: Product;
 
-  //   @HasMany(() => InventoryInTransaction)
-  //   inventory_in_transactions: InventoryInTransaction[];
+  @HasMany(() => InventoryInTransaction)
+  inventory_in_transactions: InventoryInTransaction[];
 }

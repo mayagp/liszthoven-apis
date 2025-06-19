@@ -28,14 +28,6 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      birth_date: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-      gender: {
-        type: Sequelize.TINYINT,
-        allowNull: true,
-      },
       address: {
         type: Sequelize.STRING,
         allowNull: true,

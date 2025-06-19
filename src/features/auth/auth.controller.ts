@@ -14,8 +14,9 @@ import { AdminAuthGuard } from 'src/guards/admin-auth.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { JoiValidationPipe } from 'src/validators/pipes/joi-validation.pipe';
 import { CreateUserDto } from '../user/dto/create-user.dto';
-import { registerSchema } from './validator/request/register.request';
+import { registerStaffSchema } from './validator/request/register-staff.request';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
+import { registerSupplierSchema } from './validator/request/register-supplier.request';
 
 @Controller()
 export class AuthController {
@@ -27,9 +28,17 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @Post('register')
-  register(
-    @Body(new JoiValidationPipe(registerSchema))
+  @Post('register/staff')
+  registerStaff(
+    @Body(new JoiValidationPipe(registerStaffSchema))
+    createUserDto: CreateUserDto,
+  ) {
+    return this.authService.register(createUserDto);
+  }
+
+  @Post('register/supplier')
+  registerSupplier(
+    @Body(new JoiValidationPipe(registerSupplierSchema))
     createUserDto: CreateUserDto,
   ) {
     return this.authService.register(createUserDto);

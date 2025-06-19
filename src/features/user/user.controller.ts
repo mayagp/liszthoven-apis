@@ -70,25 +70,25 @@ export class UserController {
   //   return this.userService.updateProfilePicture(+id, image);
   // }
 
-  @UseGuards(JwtAuthGuard)
-  @Put('staff/:id/assign')
-  assignStaff(
-    @Param('id') id: string,
-    @Body(new JoiValidationPipe(assignStaffSchema))
-    assignStaffDto: AssignStaffDto,
-  ) {
-    return this.userService.assignStaff(+id, assignStaffDto);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Put('staff/:id/assign')
+  // assignStaff(
+  //   @Param('id') id: string,
+  //   @Body(new JoiValidationPipe(assignStaffSchema))
+  //   assignStaffDto: AssignStaffDto,
+  // ) {
+  //   return this.userService.assignStaff(+id, assignStaffDto);
+  // }
 
-  @UseGuards(JwtAuthGuard)
-  @Delete('staff/:id/remove')
-  removeStaff(
-    @Param('id') id: string,
-    @Body(new JoiValidationPipe(assignStaffSchema))
-    removeStaffDto: AssignStaffDto,
-  ) {
-    return this.userService.removeStaff(+id, removeStaffDto);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Delete('staff/:id/remove')
+  // removeStaff(
+  //   @Param('id') id: string,
+  //   @Body(new JoiValidationPipe(assignStaffSchema))
+  //   removeStaffDto: AssignStaffDto,
+  // ) {
+  //   return this.userService.removeStaff(+id, removeStaffDto);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')

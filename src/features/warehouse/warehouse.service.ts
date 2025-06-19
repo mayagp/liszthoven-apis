@@ -50,8 +50,7 @@ export class WarehouseService {
             ],
           },
           {
-            association: 'business_unit',
-            include: [{ association: 'company' }, { association: 'branch' }],
+            association: 'branch',
           },
         ],
       });

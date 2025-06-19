@@ -1,5 +1,13 @@
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
-import { SupplierBankAccount } from 'src/features/supplier-bank-account/entities/supplier-bank-account.entity';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { User } from 'src/features/user/entities/user.entity';
 
 @Table({
   timestamps: true,
@@ -11,24 +19,24 @@ import { SupplierBankAccount } from 'src/features/supplier-bank-account/entities
   modelName: 'suppliers',
 })
 export class Supplier extends Model {
-  @Column(DataType.STRING)
-  name: string;
+  @ForeignKey(() => User)
+  @Column
+  user_id: number;
 
-  @Column(DataType.STRING)
-  address: string;
-
-  @Column(DataType.STRING)
-  contact_no: string;
-
-  @Column(DataType.STRING)
-  pic: string;
-
+  @BelongsTo(() => User)
+  user: User;
   @Column(DataType.STRING)
   tax_no: string;
 
   @Column({ type: DataType.DECIMAL(12, 2), defaultValue: 0 })
   total_payable: number;
 
-  @HasMany(() => SupplierBankAccount)
-  supplier_bank_accounts: SupplierBankAccount[];
+  @Column(DataType.STRING)
+  account_no: string;
+
+  @Column(DataType.STRING)
+  bank: string;
+
+  @Column(DataType.STRING)
+  swift_code: string;
 }

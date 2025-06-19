@@ -31,33 +31,6 @@ export const createWarehouseSchema = Joi.object({
     }),
   name: Joi.string().required(),
   location: Joi.string().required(),
-  //   business_unit_id: Joi.number()
-  //     .required()
-  //     .external(async (value) => {
-  //       const businessUnit = await BusinessUnit.findOne({
-  //         where: { id: value },
-  //       });
-  //       if (!businessUnit) {
-  //         throw new Joi.ValidationError(
-  //           'any.business_unit_id',
-  //           [
-  //             {
-  //               message: 'Business unit not found',
-  //               path: ['business_unit_id'],
-  //               type: 'any.business-unit-not-found',
-  //               context: {
-  //                 key: 'business_unit_id',
-  //                 label: 'business_unit_id',
-  //                 value,
-  //               },
-  //             },
-  //           ],
-  //           value,
-  //         );
-  //       }
-  //       return value;
-  //     }),
-
   branch_id: Joi.number()
     .required()
     .external(async (value) => {
@@ -69,9 +42,9 @@ export const createWarehouseSchema = Joi.object({
           'any.branch_id',
           [
             {
-              message: 'Business unit not found',
+              message: 'Branch not found',
               path: ['branch_id'],
-              type: 'any.business-unit-not-found',
+              type: 'any.branch-not-found',
               context: {
                 key: 'branch_id',
                 label: 'branch_id',

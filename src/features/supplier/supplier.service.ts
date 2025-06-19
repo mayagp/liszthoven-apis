@@ -17,30 +17,40 @@ export class SupplierService {
   ) {}
 
   async findAll(query: any) {
-    const { count, data } = await new QueryBuilderHelper(
-      this.supplierModel,
-      query,
-    ).getResult();
+    try {
+      const builder = new QueryBuilderHelper(this.supplierModel, query);
 
-    const result = {
-      count: count,
-      suppliers: data,
-    };
+      const { count, data } = await builder
+        .load('user') // ini untuk include relasi @BelongsTo
+        .getResult();
 
-    return this.response.success(
-      result,
-      200,
-      'Successfully retrieve suppliers',
-    );
+      const result = {
+        count: count,
+        suppliers: data,
+      };
+
+      return this.response.success(
+        result,
+        200,
+        'Successfully retrieve suppliers',
+      );
+    } catch (error) {
+      console.log(error);
+      return this.response.fail(error.message, 400);
+    }
   }
 
   async findOne(id: number) {
     try {
       const supplier = await this.supplierModel.findOne({
         where: { id },
-        include: [{ association: 'supplier_bank_accounts' }],
+        include: [
+          {
+            association: 'user',
+          },
+        ],
       });
-      return this.response.success(supplier, 200, ' Successfully get supplier');
+      return this.response.success(supplier, 200, 'Successfully get supplier');
     } catch (error) {
       return this.response.fail(error, 400);
     }
@@ -54,7 +64,6 @@ export class SupplierService {
           ...createSupplierDto,
         },
         {
-          include: [{ association: 'supplier_bank_accounts' }],
           transaction: transaction,
         },
       );

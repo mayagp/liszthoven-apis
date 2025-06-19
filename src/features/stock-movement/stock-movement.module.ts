@@ -7,6 +7,7 @@ import { InventoryOutTransaction } from '../inventory-transaction/entities/inven
 import { Inventory } from '../inventory/entities/inventory.entity';
 import { Product } from '../product/entities/product.entity';
 import { StockMovement } from './entities/stock-movement.entity';
+import { InventoryTransactionService } from '../inventory-transaction/inventory-transaction.service';
 
 @Module({
   imports: [
@@ -19,6 +20,6 @@ import { StockMovement } from './entities/stock-movement.entity';
     ]),
   ],
   controllers: [StockMovementController],
-  providers: [StockMovementService],
+  providers: [StockMovementService, InventoryTransactionService],
 })
 export class StockMovementModule {}

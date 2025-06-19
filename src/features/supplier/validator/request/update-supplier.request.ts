@@ -1,9 +1,10 @@
 import * as Joi from 'joi';
 
 export const updateSupplierSchema = Joi.object({
-  name: Joi.string().required(),
-  address: Joi.string().required(),
-  contact_no: Joi.string().required(),
-  pic: Joi.string().required(),
+  user_id: Joi.number().required(),
+  total_payable: Joi.number().allow('', null),
   tax_no: Joi.string().allow('', null),
+  account_no: Joi.string().required(),
+  bank: Joi.string().allow('', null),
+  swift_code: Joi.string().allow('', null),
 }).options({ abortEarly: false });

@@ -3,8 +3,8 @@ enum StaffStatusEnum {
   RESIGN = 1,
 }
 
-export const getStaffStatusEnumLabel = (religion: StaffStatusEnum) => {
-  switch (religion) {
+export const getStaffStatusEnumLabel = (status: StaffStatusEnum) => {
+  switch (status) {
     case StaffStatusEnum.ACTIVE:
       return 'Active';
     case StaffStatusEnum.RESIGN:

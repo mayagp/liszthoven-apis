@@ -131,13 +131,13 @@ import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
 import { Op } from 'sequelize';
 import { ResponseHelper } from 'src/helpers/response.helper';
-import StaffRoleEnum from '../staff/enums/staff-role.enum';
-import { StaffUnit } from '../user/entities/staff-unit.entity';
+import UserRoleEnum from '../staff/enums/user-role.enum';
 import { User } from '../user/entities/user.entity';
 import { Sequelize } from 'sequelize-typescript';
 import { UserService } from '../user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { Staff } from '../staff/entities/staff.entity';
+import { Supplier } from '../supplier/entities/supplier.entity';
 
 @Injectable()
 export class AuthService {
@@ -146,8 +146,8 @@ export class AuthService {
     private sequelize: Sequelize,
     private jwtService: JwtService,
     @InjectModel(User) private userModel: typeof User,
-    @InjectModel(StaffUnit) private staffUnitModel: typeof StaffUnit,
     @InjectModel(Staff) private staffModel: typeof Staff,
+    @InjectModel(Supplier) private supplierModel: typeof Supplier,
     private usersService: UserService,
   ) {}
 
@@ -170,10 +170,14 @@ export class AuthService {
             association: 'staff',
             include: [
               {
-                association: 'branches',
+                association: 'branch',
                 required: false,
               },
             ],
+          },
+          {
+            association: 'supplier',
+            required: false,
           },
         ],
       });
@@ -184,7 +188,7 @@ export class AuthService {
           const result = user.toJSON();
           delete result.password;
 
-          if (user.staff === null) {
+          if (!user.staff && !user.supplier) {
             return false;
           }
           return result;
@@ -205,10 +209,14 @@ export class AuthService {
           association: 'staff',
           include: [
             {
-              association: 'branches',
+              association: 'branch',
               required: false,
             },
           ],
+        },
+        {
+          association: 'supplier',
+          required: false,
         },
       ],
     });
@@ -217,6 +225,7 @@ export class AuthService {
 
   async register(createUserDto: CreateUserDto) {
     const transaction = await this.sequelize.transaction();
+    let committed = false;
 
     try {
       createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
@@ -225,52 +234,45 @@ export class AuthService {
         { transaction },
       );
 
+      let staff;
+
       if (createUserDto.staff) {
-        const staff = await Staff.create(
+        staff = await this.staffModel.create(
           {
             ...createUserDto.staff,
+            user_id: user.id,
+            branch_id: createUserDto.staff.branch_id,
+          },
+          { transaction },
+        );
+      }
+
+      let supplier;
+
+      if (createUserDto.supplier) {
+        supplier = await this.supplierModel.create(
+          {
+            ...createUserDto.supplier,
             user_id: user.id,
           },
           { transaction },
         );
-
-        if (createUserDto.staff) {
-          const staff = await this.staffModel.create(
-            {
-              ...createUserDto.staff,
-              user_id: user.id,
-              branch_id: createUserDto.staff.branchId, // ← cukup ini
-            },
-            { transaction },
-          );
-        }
-
-        if (createUserDto.staff.branchId) {
-          await this.staffUnitModel.create(
-            {
-              staff_id: staff.id,
-              branch_id: createUserDto.staff.branchId,
-            },
-            { transaction },
-          );
-        }
       }
 
       await transaction.commit();
+      committed = true;
 
-      // 5. Ambil ulang dengan relasi lengkap
       const getUser = await this.userModel.findOne({
         where: { id: user.id },
         include: [
           {
-            required: true,
             association: 'staff',
-            include: [
-              {
-                association: 'branch',
-                required: false,
-              },
-            ],
+            required: false,
+            include: [{ association: 'branch', required: false }],
+          },
+          {
+            association: 'supplier',
+            required: false,
           },
         ],
       });
@@ -281,7 +283,9 @@ export class AuthService {
         'Successfully register user',
       );
     } catch (error) {
-      await transaction.rollback();
+      if (!committed) {
+        await transaction.rollback();
+      }
       return this.response.fail(error.message, HttpStatus.BAD_REQUEST);
     }
   }

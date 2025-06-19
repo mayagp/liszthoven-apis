@@ -1,7 +1,8 @@
 export class UpdateSupplierDto {
-  name: string;
-  address: string;
-  contact_no: string;
+  user_id: number;
   tax_no: string;
-  pic: string;
+  total_payable: number;
+  account_no: string;
+  bank: string;
+  swift_code: string;
 }

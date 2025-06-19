@@ -13,6 +13,7 @@ import { AuthService } from './auth.service';
 import { AdminStrategy } from 'src/strategies/admin.strategy';
 import { UserService } from '../user/user.service';
 import { LocalStrategy } from 'src/strategies/local.strategy';
+import { Supplier } from '../supplier/entities/supplier.entity';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { LocalStrategy } from 'src/strategies/local.strategy';
       // ForgotPassword,
       Staff,
       Branch,
-      StaffUnit,
+      // StaffUnit,
+      Supplier,
       // MidtransPayment,
     ]),
     PassportModule,

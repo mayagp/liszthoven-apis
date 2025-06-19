@@ -75,7 +75,6 @@ export class SupplierQuotation extends Model {
     'note',
     'supplier.name',
     'supplier.address',
-    'supplier.pic',
     'supplier.contact_no',
     'quotation_no',
   ];

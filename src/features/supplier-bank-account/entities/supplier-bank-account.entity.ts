@@ -26,7 +26,4 @@ export class SupplierBankAccount extends Model {
 
   @Column(DataType.STRING)
   bank: string;
-
-  @Column(DataType.STRING)
-  swift_code: string;
 }

@@ -8,6 +8,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Branch } from 'src/features/branch/entities/branch.entity';
+import { Inventory } from 'src/features/inventory/entities/inventory.entity';
 
 @Table({
   timestamps: true,
@@ -19,10 +20,6 @@ import { Branch } from 'src/features/branch/entities/branch.entity';
   modelName: 'warehouses',
 })
 export class Warehouse extends Model {
-  //   @ForeignKey(() => BusinessUnit)
-  //   @Column(DataType.BIGINT)
-  //   business_unit_id: number;
-
   @ForeignKey(() => Branch)
   @Column(DataType.BIGINT)
   branch_id: number;
@@ -36,11 +33,8 @@ export class Warehouse extends Model {
   @Column(DataType.TEXT)
   location: string;
 
-  //   @HasMany(() => Inventory)
-  //   inventories: Inventory[];
-
-  //   @BelongsTo(() => BusinessUnit)
-  //   business_unit: BusinessUnit[];
+  @HasMany(() => Inventory)
+  inventories: Inventory[];
 
   @BelongsTo(() => Branch)
   branch: Branch[];

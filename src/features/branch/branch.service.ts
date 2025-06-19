@@ -23,23 +23,18 @@ export class BranchService {
 
     const result = {
       count: count,
-      branches: data,
+      branch: data,
     };
 
-    return this.response.success(result, 200, 'Successfully retrieve branches');
+    return this.response.success(result, 200, 'Successfully retrieve branch');
   }
 
   async findOne(id: number) {
     try {
-      const branches = await this.branchModel.findOne({
+      const branch = await this.branchModel.findOne({
         where: { id },
-        include: [
-          { association: 'province' },
-          { association: 'city' },
-          { association: 'subdistrict' },
-        ],
       });
-      return this.response.success(branches, 200, ' Successfully get branch');
+      return this.response.success(branch, 200, ' Successfully get branch');
     } catch (error) {
       return this.response.fail(error, 400);
     }
@@ -65,7 +60,6 @@ export class BranchService {
     try {
       const branch = await this.branchModel.findOne({
         where: { id },
-        // include: [{ association: 'branches' }],
       });
 
       // Tambahkan pengecekan null

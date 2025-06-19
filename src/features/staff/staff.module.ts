@@ -3,9 +3,10 @@ import { StaffService } from './staff.service';
 import { StaffController } from './staff.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Branch } from '../branch/entities/branch.entity';
-import { StaffUnit } from '../user/entities/staff-unit.entity';
 import { User } from '../user/entities/user.entity';
 import { Staff } from './entities/staff.entity';
+import { AutoNumberService } from '../auto-number/auto-number.service';
+import { AutoNumber } from '../auto-number/entities/auto-number.entity';
 
 @Module({
   imports: [
@@ -13,12 +14,12 @@ import { Staff } from './entities/staff.entity';
       User,
       Staff,
       Branch,
-      StaffUnit,
-      // AutoNumber,
+      // StaffUnit,
+      AutoNumber,
     ]),
   ],
   controllers: [StaffController],
-  providers: [StaffService],
+  providers: [StaffService, AutoNumberService],
   exports: [StaffService],
 })
 export class StaffModule {}

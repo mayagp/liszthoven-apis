@@ -28,6 +28,26 @@ import { SupplierQuotationModule } from './features/supplier-quotation/supplier-
 import { SupplierModule } from './features/supplier/supplier.module';
 import { WarehouseModule } from './features/warehouse/warehouse.module';
 import { SupplierBankAccountModule } from './features/supplier-bank-account/supplier-bank-account.module';
+import { SerializeItemModule } from './features/serialize-item/serialize-item.module';
+import { AutoNumberModule } from './features/auto-number/auto-number.module';
+import { GoodsReceiptDetailModule } from './features/goods-receipt-detail/goods-receipt-detail.module';
+import { GoodsReceiptDocumentModule } from './features/goods-receipt-document/goods-receipt-document.module';
+import { GoodsReceiptModule } from './features/goods-receipt/goods-receipt.module';
+import { PurchaseInvoiceDetailModule } from './features/purchase-invoice-detail/purchase-invoice-detail.module';
+import { PurchaseInvoiceDocumentModule } from './features/purchase-invoice-document/purchase-invoice-document.module';
+import { PurchaseInvoiceModule } from './features/purchase-invoice/purchase-invoice.module';
+import { PurchaseOrderDetailModule } from './features/purchase-order-detail/purchase-order-detail.module';
+import { PurchaseOrderDocumentModule } from './features/purchase-order-document/purchase-order-document.module';
+import { PurchaseOrderModule } from './features/purchase-order/purchase-order.module';
+import { PurchasePaymentAllocationModule } from './features/purchase-payment-allocation/purchase-payment-allocation.module';
+import { PurchasePaymentDocumentModule } from './features/purchase-payment-document/purchase-payment-document.module';
+import { PurchasePaymentModule } from './features/purchase-payment/purchase-payment.module';
+import { PurchaseRequestDetailModule } from './features/purchase-request-detail/purchase-request-detail.module';
+import { PurchaseRequestModule } from './features/purchase-request/purchase-request.module';
+import { PurchaseReturnDetailModule } from './features/purchase-return-detail/purchase-return-detail.module';
+import { PurchaseReturnDocumentModule } from './features/purchase-return-document/purchase-return-document.module';
+import { PurchaseReturnModule } from './features/purchase-return/purchase-return.module';
+import { StockMovementModule } from './features/stock-movement/stock-movement.module';
 
 @Module({
   imports: [
@@ -53,39 +73,39 @@ import { SupplierBankAccountModule } from './features/supplier-bank-account/supp
     ProductModule,
     ProductImageModule,
     WarehouseModule,
-    // SerializeItemsAdminModule,
+    SerializeItemModule,
     InventoryModule,
     InventoryHistoryModule,
     SupplierModule,
-    // PurchaseOrdersAdminModule,
-    // PurchaseOrderDetailsAdminModule,
-    // PurchaseInvoicesAdminModule,
-    // // PurchaseOrderWarehousesAdminModule,
-    // PurchaseInvoiceDetailsAdminModule,
-    // GoodsReceiptsAdminModule,
-    // GoodsReceiptDetailsAdminModule,
+    PurchaseOrderModule,
+    PurchaseOrderDetailModule,
+    PurchaseInvoiceModule,
+    // PurchaseOrderWarehousesAdminModule,
+    PurchaseInvoiceDetailModule,
+    GoodsReceiptModule,
+    GoodsReceiptDetailModule,
     SupplierQuotationModule,
     SupplierQuotationDetailModule,
-    // PurchaseRequestsAdminModule,
-    // PurchaseRequestDetailsAdminModule,
-    // PurchasePaymentsAdminModule,
-    // PurchasePaymentAllocationsAdminModule,
+    PurchaseRequestModule,
+    PurchaseRequestDetailModule,
+    PurchasePaymentModule,
+    PurchasePaymentAllocationModule,
     // PurchaseNotesAdminModule,
     // PurchaseNoteDetailsAdminModule,
-    // PurchaseReturnsAdminModule,
-    // PurchaseReturnDetailsAdminModule,
+    PurchaseReturnModule,
+    PurchaseReturnDetailModule,
     InventoryTransactionModule,
-    // StockMovementsAdminModule,
+    StockMovementModule,
     SupplierBankAccountModule,
     // PurchasePlansAdminModule,
     // PlanImplementsAdminModule,
     // CustomerAddressesAdminModule,
-    // AutoNumbersAdminModule,
-    // PurchaseOrderDocumentsAdminModule,
-    // PurchaseInvoiceDocumentsAdminModule,
-    // PurchaseReturnDocumentsAdminModule,
-    // GoodsReceiptDocumentsAdminModule,
-    // PurchasePaymentDocumentsAdminModule,
+    AutoNumberModule,
+    PurchaseOrderDocumentModule,
+    PurchaseInvoiceDocumentModule,
+    PurchaseReturnDocumentModule,
+    GoodsReceiptDocumentModule,
+    PurchasePaymentDocumentModule,
     ProvinceModule,
     CityModule,
     SubdistrictModule,

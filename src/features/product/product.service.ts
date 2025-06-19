@@ -39,9 +39,6 @@ export class ProductService {
         where: { id },
         include: [
           {
-            association: 'brand',
-          },
-          {
             association: 'product_category',
           },
           {
@@ -110,9 +107,6 @@ export class ProductService {
         {
           include: [
             {
-              association: 'brand',
-            },
-            {
               association: 'product_category',
             },
             {
@@ -137,9 +131,6 @@ export class ProductService {
       const product = await this.productModel.findOne({
         where: { id: id },
         include: [
-          {
-            association: 'brand',
-          },
           {
             association: 'product_category',
           },
