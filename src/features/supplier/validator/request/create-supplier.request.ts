@@ -4,7 +4,7 @@ export const createSupplierSchema = Joi.object({
   user_id: Joi.number().required(),
   total_payable: Joi.number().allow('', null),
   tax_no: Joi.string().allow('', null),
-  account_no: Joi.string().required(),
+  account_no: Joi.string(),
   bank: Joi.string().allow('', null),
   swift_code: Joi.string().allow('', null),
 }).options({ abortEarly: false });

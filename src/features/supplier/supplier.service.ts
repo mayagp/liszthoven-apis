@@ -6,6 +6,7 @@ import { ResponseHelper } from 'src/helpers/response.helper';
 import { Supplier } from './entities/supplier.entity';
 import { Sequelize } from 'sequelize-typescript';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class SupplierService {
@@ -20,9 +21,17 @@ export class SupplierService {
     try {
       const builder = new QueryBuilderHelper(this.supplierModel, query);
 
-      const { count, data } = await builder
-        .load('user') // ini untuk include relasi @BelongsTo
-        .getResult();
+      // Handle manual order nested untuk relasi user.name
+      if (query.order_by === 'user-name') {
+        const order = [
+          [{ model: User, as: 'user' }, 'name', query.direction || 'ASC'],
+        ];
+
+        builder.options({ order }); // pakai extraOptions untuk order yang benar
+      }
+
+      // tetap load relasi user
+      const { count, data } = await builder.load('user').getResult();
 
       const result = {
         count: count,

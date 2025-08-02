@@ -5,6 +5,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { SupplierQuotationDetail } from '../supplier-quotation-detail/entities/supplier-quotation-detail.entity';
 import { SupplierQuotation } from './entities/supplier-quotation.entity';
 import { Supplier } from '../supplier/entities/supplier.entity';
+import { AutoNumber } from '../auto-number/entities/auto-number.entity';
+import { AutoNumberService } from '../auto-number/auto-number.service';
 
 @Module({
   imports: [
@@ -12,9 +14,10 @@ import { Supplier } from '../supplier/entities/supplier.entity';
       SupplierQuotation,
       SupplierQuotationDetail,
       Supplier,
+      AutoNumber,
     ]),
   ],
   controllers: [SupplierQuotationController],
-  providers: [SupplierQuotationService],
+  providers: [SupplierQuotationService, AutoNumberService],
 })
 export class SupplierQuotationModule {}

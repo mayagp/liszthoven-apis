@@ -29,5 +29,5 @@ export const createSupplierQuotationDetailSchema = Joi.object({
       return value;
     }),
   quantity: Joi.number().required().min(1),
-  price_per_unit: Joi.number().required(),
+  price_per_unit: Joi.number().allow('', null),
 }).options({ abortEarly: false });

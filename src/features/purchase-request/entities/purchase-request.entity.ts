@@ -29,7 +29,7 @@ export class PurchaseRequest extends Model {
 
   @Column({
     type: DataType.TINYINT,
-    defaultValue: SupplierQuotationStatus.PENDING,
+    defaultValue: SupplierQuotationStatus.REQUESTED,
   })
   status: number;
 

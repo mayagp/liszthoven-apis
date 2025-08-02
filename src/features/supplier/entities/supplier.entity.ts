@@ -25,18 +25,19 @@ export class Supplier extends Model {
 
   @BelongsTo(() => User)
   user: User;
-  @Column(DataType.STRING)
+
+  @Column({ type: DataType.STRING, allowNull: true })
   tax_no: string;
 
-  @Column({ type: DataType.DECIMAL(12, 2), defaultValue: 0 })
+  @Column({ type: DataType.DECIMAL(12, 2), defaultValue: 0, allowNull: true })
   total_payable: number;
 
   @Column(DataType.STRING)
   account_no: string;
 
-  @Column(DataType.STRING)
+  @Column({ type: DataType.STRING, allowNull: true })
   bank: string;
 
-  @Column(DataType.STRING)
+  @Column({ type: DataType.STRING, allowNull: true })
   swift_code: string;
 }

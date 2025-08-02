@@ -11,7 +11,7 @@ export const createProductSchema = Joi.object({
   status: Joi.number().required(),
   valuation_method: Joi.number().required(),
   brand: Joi.string().required(),
-  quantity: Joi.number().required(),
+  quantity: Joi.number().allow(null, ''),
   product_category_id: Joi.number()
     .required()
     .external(async (value) => {

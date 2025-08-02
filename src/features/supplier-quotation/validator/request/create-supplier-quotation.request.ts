@@ -4,32 +4,32 @@ import { Supplier } from 'src/features/supplier/entities/supplier.entity';
 import { SupplierQuotation } from '../../entities/supplier-quotation.entity';
 
 export const createSupplierQuotationSchema = Joi.object({
-  quotation_no: Joi.string()
-    .required()
-    .external(async (value) => {
-      const supplierQuotation = await SupplierQuotation.findOne({
-        where: { quotation_no: value },
-      });
-      if (supplierQuotation) {
-        throw new Joi.ValidationError(
-          'any.quotation-no-exists',
-          [
-            {
-              message: 'Quotation no already exists',
-              path: ['quotation_no'],
-              type: 'any.quotation-no-exists',
-              context: {
-                key: 'quotation_no',
-                label: 'quotation_no',
-                value,
-              },
-            },
-          ],
-          value,
-        );
-      }
-      return value;
-    }),
+  // quotation_no: Joi.string()
+  //   .required()
+  //   .external(async (value) => {
+  //     const supplierQuotation = await SupplierQuotation.findOne({
+  //       where: { quotation_no: value },
+  //     });
+  //     if (supplierQuotation) {
+  //       throw new Joi.ValidationError(
+  //         'any.quotation-no-exists',
+  //         [
+  //           {
+  //             message: 'Quotation no already exists',
+  //             path: ['quotation_no'],
+  //             type: 'any.quotation-no-exists',
+  //             context: {
+  //               key: 'quotation_no',
+  //               label: 'quotation_no',
+  //               value,
+  //             },
+  //           },
+  //         ],
+  //         value,
+  //       );
+  //     }
+  //     return value;
+  //   }),
   supplier_id: Joi.number()
     .required()
     .external(async (value) => {
@@ -89,7 +89,7 @@ export const createSupplierQuotationSchema = Joi.object({
           return value;
         }),
       quantity: Joi.number().required(),
-      price_per_unit: Joi.number().required(),
+      price_per_unit: Joi.number().allow('', null),
     }),
   ),
 }).options({ abortEarly: false });

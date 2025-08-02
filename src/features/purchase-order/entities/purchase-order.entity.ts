@@ -8,7 +8,6 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { PurchaseOrderDetail } from 'src/features/purchase-order-detail/entities/purchase-order-detail.entity';
-import { PurchaseOrderDocument } from 'src/features/purchase-order-document/entities/purchase-order-document.entity';
 import { Supplier } from 'src/features/supplier/entities/supplier.entity';
 import { User } from 'src/features/user/entities/user.entity';
 import PurchaseOrderStatus, {
@@ -82,9 +81,6 @@ export class PurchaseOrder extends Model {
 
   @HasMany(() => PurchaseOrderDetail)
   purchase_order_details: PurchaseOrderDetail[];
-
-  @HasMany(() => PurchaseOrderDocument)
-  purchase_order_documents: PurchaseOrderDocument[];
 
   @BelongsTo(() => Supplier)
   supplier: Supplier;

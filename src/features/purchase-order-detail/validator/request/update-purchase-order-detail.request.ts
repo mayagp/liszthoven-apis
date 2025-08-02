@@ -3,7 +3,7 @@ import { Product } from 'src/features/product/entities/product.entity';
 import { SupplierQuotation } from 'src/features/supplier-quotation/entities/supplier-quotation.entity';
 
 export const updatePurchaseOrderDetailSchema = Joi.object({
-  quotation_no: Joi.string().required(),
+  quotation_no: Joi.string().allow(null),
   supplier_quotation_id: Joi.number()
     .allow(null)
     .external(async (value) => {

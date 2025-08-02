@@ -33,7 +33,7 @@ export const createPurchaseOrderSchema = Joi.object({
     }),
   date: Joi.date().required(),
   expected_delivery_date: Joi.date().required(),
-  tax: Joi.number().required(),
+  tax: Joi.number(),
   note: Joi.string().optional().default('').allow(null, ''),
   branch_id: Joi.number()
     .required()
@@ -64,7 +64,7 @@ export const createPurchaseOrderSchema = Joi.object({
   purchase_order_details: Joi.array()
     .items(
       Joi.object({
-        quotation_no: Joi.string().required(),
+        quotation_no: Joi.string().allow(null),
         supplier_quotation_id: Joi.number()
           .allow(null)
           .external(async (value) => {

@@ -198,37 +198,37 @@ export class PurchaseRequestService {
     }
   }
 
-  async setStatusAsApprovalRequest(id: number) {
-    const purchaseRequest = await this.purchaseRequestModel.findOne({
-      where: { id: id },
-    });
+  // async setStatusAsApprovalRequest(id: number) {
+  //   const purchaseRequest = await this.purchaseRequestModel.findOne({
+  //     where: { id: id },
+  //   });
 
-    if (!purchaseRequest) {
-      return this.response.fail('Purchase request not found', 404);
-    }
+  //   if (!purchaseRequest) {
+  //     return this.response.fail('Purchase request not found', 404);
+  //   }
 
-    if (purchaseRequest.status !== SupplierQuotationStatus.PENDING) {
-      return this.response.fail('Purchase request status is not pending', 400);
-    }
+  //   if (purchaseRequest.status !== SupplierQuotationStatus.PENDING) {
+  //     return this.response.fail('Purchase request status is not pending', 400);
+  //   }
 
-    try {
-      await purchaseRequest.update({
-        status: PurchaseRequestStatus.APPROVAL_REQUEST,
-      });
-      return this.response.success(
-        purchaseRequest,
-        200,
-        'Successfully set status as approval request',
-      );
-    } catch (error) {
-      return this.response.fail(
-        'Failed to set status as approval request',
-        400,
-      );
-    }
-  }
+  //   try {
+  //     await purchaseRequest.update({
+  //       status: PurchaseRequestStatus.APPROVAL_REQUEST,
+  //     });
+  //     return this.response.success(
+  //       purchaseRequest,
+  //       200,
+  //       'Successfully set status as approval request',
+  //     );
+  //   } catch (error) {
+  //     return this.response.fail(
+  //       'Failed to set status as approval request',
+  //       400,
+  //     );
+  //   }
+  // }
 
-  async setStatusAsCancelled(id: number) {
+  async setStatusAsRejected(id: number) {
     const purchaseRequest = await this.purchaseRequestModel.findOne({
       where: { id: id },
     });
@@ -243,15 +243,15 @@ export class PurchaseRequestService {
 
     try {
       await purchaseRequest.update({
-        status: PurchaseRequestStatus.CANCELLED,
+        status: PurchaseRequestStatus.REJECTED,
       });
       return this.response.success(
         purchaseRequest,
         200,
-        'Successfully set status as cancelled',
+        'Successfully set status as rejected',
       );
     } catch (error) {
-      return this.response.fail('Failed to set status as cancelled', 400);
+      return this.response.fail('Failed to set status as rejected', 400);
     }
   }
 
@@ -262,13 +262,6 @@ export class PurchaseRequestService {
 
     if (!purchaseRequest) {
       return this.response.fail('Purchase request not found', 404);
-    }
-
-    if (purchaseRequest.status !== PurchaseRequestStatus.APPROVAL_REQUEST) {
-      return this.response.fail(
-        'Purchase request is not approval request',
-        400,
-      );
     }
 
     try {

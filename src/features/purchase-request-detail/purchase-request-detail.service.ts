@@ -30,8 +30,11 @@ export class PurchaseRequestDetailService {
       return this.response.fail('Purchase request not found', 404);
     }
 
-    if (purchaseRequest.status !== PurchaseRequestStatus.PENDING) {
-      return this.response.fail('Purchase request status is not pending', 400);
+    if (purchaseRequest.status !== PurchaseRequestStatus.NEED_APPROVAL) {
+      return this.response.fail(
+        'Purchase request status is not need approval',
+        400,
+      );
     }
 
     const isProductExists = await this.purchaseRequestDetailModel.findOne({
@@ -96,8 +99,11 @@ export class PurchaseRequestDetailService {
       return this.response.fail('Purchase request not found', 404);
     }
 
-    if (purchaseRequest.status !== PurchaseRequestStatus.PENDING) {
-      return this.response.fail('Purchase request status is not pending', 400);
+    if (purchaseRequest.status !== PurchaseRequestStatus.NEED_APPROVAL) {
+      return this.response.fail(
+        'Purchase request status is not need approval',
+        400,
+      );
     }
 
     const purchaseRequestDetail = await this.purchaseRequestDetailModel.findOne(
@@ -154,8 +160,11 @@ export class PurchaseRequestDetailService {
     if (!purchaseRequest) {
       return this.response.fail('Purchase request not found', 404);
     }
-    if (purchaseRequest.status !== PurchaseRequestStatus.PENDING) {
-      return this.response.fail('Purchase request status is not pending', 400);
+    if (purchaseRequest.status !== PurchaseRequestStatus.NEED_APPROVAL) {
+      return this.response.fail(
+        'Purchase request status is not need approval',
+        400,
+      );
     }
 
     const purchaseRequestDetail = await this.purchaseRequestDetailModel.findOne(

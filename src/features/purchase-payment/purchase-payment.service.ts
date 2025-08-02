@@ -34,7 +34,7 @@ export class PurchasePaymentService {
         this.purchasePaymentModel,
         query,
       )
-        .load('supplier', 'created_by_user')
+        .load('supplier.user', 'created_by_user')
         .getResult();
 
       for (const purchasePayment of data) {
@@ -76,6 +76,11 @@ export class PurchasePaymentService {
           },
           {
             association: 'supplier',
+            include: [
+              {
+                association: 'user',
+              },
+            ],
           },
           {
             association: 'purchase_payment_documents',

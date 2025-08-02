@@ -9,6 +9,7 @@ import {
   Put,
   Query,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { PurchaseInvoiceService } from './purchase-invoice.service';
 import { CreatePurchaseInvoiceDto } from './dto/create-purchase-invoice.dto';
@@ -20,6 +21,7 @@ import { JoiValidationPipe } from 'src/validators/pipes/joi-validation.pipe';
 import { createPurchaseInvoiceSchema } from './validator/request/create-purchase-invoice.request';
 import { purchaseInvoiceIdParamSchema } from './validator/param/purchase-invoice-id.param';
 import { updatePurchaseInvoiceSchema } from './validator/request/update-purchase-invoice.request';
+import { User } from '../user/entities/user.entity';
 
 @Controller()
 export class PurchaseInvoiceController {
@@ -99,5 +101,15 @@ export class PurchaseInvoiceController {
     id: string,
   ) {
     return this.purchaseInvoiceService.cancelPurchaseInvoice(+id);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/pdf')
+  async pdf(
+    @Param('id', new JoiValidationParamPipe(purchaseInvoiceIdParamSchema))
+    id: string,
+    @Res() res,
+    @CurrentUser() user: User,
+  ) {
+    return this.purchaseInvoiceService.pdf(+id, res, user);
   }
 }

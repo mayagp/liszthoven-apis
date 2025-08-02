@@ -28,7 +28,7 @@ export class SupplierQuotationDetail extends Model {
   @Column(DataType.INTEGER)
   quantity: number;
 
-  @Column({ type: DataType.DECIMAL(12, 2), defaultValue: 0 })
+  @Column({ type: DataType.DECIMAL(12, 2), defaultValue: 0, allowNull: true })
   price_per_unit: number;
 
   @Column({

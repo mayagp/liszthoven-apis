@@ -31,7 +31,7 @@ export const updatePurchaseOrderSchema = Joi.object({
     }),
   date: Joi.date().required(),
   expected_delivery_date: Joi.date().required(),
-  tax: Joi.number().required(),
+  tax: Joi.number(),
   note: Joi.string().optional().default('').allow(null, ''),
   branch_id: Joi.number()
     .required()

@@ -72,14 +72,14 @@ export class PurchaseRequestController {
     return this.purchaseRequestService.delete(+id);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Put(':id/approval-request')
-  statusApprovalRequest(
-    @Param('id', new JoiValidationParamPipe(purchaseRequestIdParamSchema))
-    id: string,
-  ) {
-    return this.purchaseRequestService.setStatusAsApprovalRequest(+id);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Put(':id/approval-request')
+  // statusApprovalRequest(
+  //   @Param('id', new JoiValidationParamPipe(purchaseRequestIdParamSchema))
+  //   id: string,
+  // ) {
+  //   return this.purchaseRequestService.setStatusAsApprovalRequest(+id);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id/approved')
@@ -92,11 +92,11 @@ export class PurchaseRequestController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(':id/cancelled')
-  statusCancelled(
+  @Put(':id/rejected')
+  statusRejected(
     @Param('id', new JoiValidationParamPipe(purchaseRequestIdParamSchema))
     id: string,
   ) {
-    return this.purchaseRequestService.setStatusAsCancelled(+id);
+    return this.purchaseRequestService.setStatusAsRejected(+id);
   }
 }

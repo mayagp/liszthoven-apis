@@ -13,6 +13,7 @@ import { SupplierQuotation } from './entities/supplier-quotation.entity';
 import { Sequelize } from 'sequelize-typescript';
 import * as moment from 'moment';
 import SupplierQuotationStatus from './enum/supplier-quotation-status.enum';
+import { AutoNumberService } from '../auto-number/auto-number.service';
 
 @Injectable()
 export class SupplierQuotationService {
@@ -23,6 +24,7 @@ export class SupplierQuotationService {
     private supplierQuotationModel: typeof SupplierQuotation,
     @InjectModel(SupplierQuotationDetail)
     private supplierQuotationDetailModel: typeof SupplierQuotationDetail,
+    private autoNumberService: AutoNumberService,
   ) {}
 
   async findAll(query: any) {
@@ -78,6 +80,11 @@ export class SupplierQuotationService {
   async create(createSupplierQuotationDto: CreateSupplierQuotationDto) {
     const transaction = await this.sequelize.transaction();
     try {
+      createSupplierQuotationDto.quotation_no =
+        await this.autoNumberService.generateAutoNumber(
+          SupplierQuotation.name,
+          transaction,
+        );
       let subtotal = 0;
 
       for (const supplierQuotationDetail of createSupplierQuotationDto.supplier_quotation_details) {
@@ -118,12 +125,13 @@ export class SupplierQuotationService {
       return this.response.fail('Failed to create supplier quotation', 400);
     }
   }
-
   async update(
     id: number,
     updateSupplierQuotationDto: UpdateSupplierQuotationDto,
   ) {
-    const supplierQuotation = await this.supplierQuotationModel.findByPk(id);
+    const supplierQuotation = await this.supplierQuotationModel.findByPk(id, {
+      include: ['supplier_quotation_details'], // include details supaya bisa hitung subtotal
+    });
 
     if (!supplierQuotation) {
       return this.response.fail('Supplier quotation not found', 404);
@@ -142,16 +150,64 @@ export class SupplierQuotationService {
 
     const transaction = await this.sequelize.transaction();
     try {
-      const grandtotal =
-        +supplierQuotation.subtotal + +updateSupplierQuotationDto.tax;
+      // Update detail jika ada (update / create)
+      if (
+        updateSupplierQuotationDto.supplier_quotation_details &&
+        Array.isArray(updateSupplierQuotationDto.supplier_quotation_details)
+      ) {
+        for (const detailDto of updateSupplierQuotationDto.supplier_quotation_details) {
+          if (detailDto.id) {
+            const detail = await this.supplierQuotationDetailModel.findOne({
+              where: { id: detailDto.id, supplier_quotation_id: id },
+            });
+
+            if (detail) {
+              await detail.update(detailDto, { transaction });
+            } else {
+              throw new Error(`Detail with id ${detailDto.id} not found`);
+            }
+          } else {
+            await this.supplierQuotationDetailModel.create(
+              {
+                ...detailDto,
+                supplier_quotation_id: id,
+              },
+              { transaction },
+            );
+          }
+        }
+      }
+
+      // Reload updated details dari DB supaya akurat hitungan subtotal
+      const updatedDetails = await this.supplierQuotationDetailModel.findAll({
+        where: { supplier_quotation_id: id },
+        transaction,
+      });
+
+      // Hitung subtotal dari details
+      const subtotal = updatedDetails.reduce(
+        (total, item) =>
+          total + Number(item.price_per_unit) * Number(item.quantity),
+        0,
+      );
+
+      const tax = Number(
+        updateSupplierQuotationDto.tax || supplierQuotation.tax || 0,
+      );
+      const grandtotal = subtotal + tax;
+
+      // Update header quotation dengan subtotal dan grandtotal baru
       await supplierQuotation.update(
         {
           ...updateSupplierQuotationDto,
-          grandtotal: grandtotal,
+          subtotal,
+          grandtotal,
         },
-        { transaction: transaction },
+        { transaction },
       );
+
       await transaction.commit();
+
       return this.response.success(
         supplierQuotation,
         200,
@@ -159,7 +215,10 @@ export class SupplierQuotationService {
       );
     } catch (error) {
       await transaction.rollback();
-      return this.response.fail('Failed to update supplier quotation', 400);
+      return this.response.fail(
+        error.message || 'Failed to update supplier quotation',
+        400,
+      );
     }
   }
 
@@ -190,6 +249,35 @@ export class SupplierQuotationService {
     }
   }
 
+  async setStatusAsOffered(id: number) {
+    const supplierQuotation = await this.supplierQuotationModel.findOne({
+      where: { id: id },
+    });
+
+    if (!supplierQuotation) {
+      return this.response.fail('Supplier quotation not found', 404);
+    }
+
+    if (supplierQuotation.status !== SupplierQuotationStatus.OFFERED) {
+      return this.response.fail(
+        'Supplier quotation already received or cancelled',
+        400,
+      );
+    }
+
+    try {
+      await supplierQuotation.update({
+        status: SupplierQuotationStatus.OFFERED,
+      });
+      return this.response.success(
+        supplierQuotation,
+        200,
+        'Successfully status offered',
+      );
+    } catch (error) {
+      return this.response.fail('Failed to set status as offered', 400);
+    }
+  }
   async setStatusAsReceived(id: number) {
     const supplierQuotation = await this.supplierQuotationModel.findOne({
       where: { id: id },
@@ -199,7 +287,7 @@ export class SupplierQuotationService {
       return this.response.fail('Supplier quotation not found', 404);
     }
 
-    if (supplierQuotation.status !== SupplierQuotationStatus.PENDING) {
+    if (supplierQuotation.status !== SupplierQuotationStatus.REQUESTED) {
       return this.response.fail(
         'Supplier quotation already received or cancelled',
         400,
@@ -220,7 +308,7 @@ export class SupplierQuotationService {
     }
   }
 
-  async setStatusAsCancelled(id: number) {
+  async setStatusAsRejected(id: number) {
     const supplierQuotation = await this.supplierQuotationModel.findOne({
       where: { id: id },
     });
@@ -229,24 +317,24 @@ export class SupplierQuotationService {
       return this.response.fail('Supplier quotation not found', 404);
     }
 
-    if (supplierQuotation.status !== SupplierQuotationStatus.PENDING) {
+    if (supplierQuotation.status !== SupplierQuotationStatus.REQUESTED) {
       return this.response.fail(
-        'Supplier quotation already received or cancelled',
+        'Supplier quotation already received or rejected',
         400,
       );
     }
 
     try {
       await supplierQuotation.update({
-        status: SupplierQuotationStatus.CANCELLED,
+        status: SupplierQuotationStatus.REJECTED,
       });
       return this.response.success(
         supplierQuotation,
         200,
-        'Successfully set status as cancelled',
+        'Successfully set status as rejected',
       );
     } catch (error) {
-      return this.response.fail('Failed to set status as cancelled', 400);
+      return this.response.fail('Failed to set status as rejected', 400);
     }
   }
 

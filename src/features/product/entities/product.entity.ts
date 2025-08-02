@@ -71,11 +71,11 @@ export class Product extends Model {
   @Column(DataType.BIGINT)
   product_category_id: number;
 
-  //   @ForeignKey(() => Brand)
-  //   @Column(DataType.BIGINT)
-  //   brand_id: number;
-
-  @Column({ type: DataType.INTEGER, defaultValue: 0 })
+  @Column({
+    type: DataType.INTEGER,
+    defaultValue: 0,
+    allowNull: true,
+  })
   quantity: number;
 
   @Column({
@@ -92,9 +92,6 @@ export class Product extends Model {
 
   @BelongsTo(() => ProductCategory)
   product_category: ProductCategory;
-
-  //   @BelongsTo(() => Brand)
-  //   brand: Brand;
 
   @HasMany(() => ProductImage)
   product_images: ProductImage[];

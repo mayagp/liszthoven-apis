@@ -80,9 +80,6 @@ export class PurchaseOrderService {
           {
             association: 'branch',
           },
-          {
-            association: 'purchase_order_documents',
-          },
         ],
       });
 

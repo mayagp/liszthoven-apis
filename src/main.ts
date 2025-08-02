@@ -20,8 +20,6 @@ async function bootstrap() {
       callback(null, true);
     },
   });
-
-  // await app.listen(3001, '192.168.1.3');
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

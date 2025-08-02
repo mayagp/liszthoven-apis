@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Res } from '@nestjs/common';
 import { CreatePurchaseInvoiceDto } from './dto/create-purchase-invoice.dto';
 import { UpdatePurchaseInvoiceDto } from './dto/update-purchase-invoice.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -15,6 +15,9 @@ import { AutoNumberService } from '../auto-number/auto-number.service';
 import PurchaseOrderStatus from '../purchase-order/enum/purchase-order-status.enum';
 import PurchaseInvoiceStatus from './enum/purchase-invoice-status.enum';
 import { User } from '../user/entities/user.entity';
+import * as moment from 'moment';
+import { PDFOptions } from 'puppeteer';
+import { PdfHelper } from 'src/helpers/pdf.helper';
 
 @Injectable()
 export class PurchaseInvoiceService {
@@ -213,7 +216,9 @@ export class PurchaseInvoiceService {
       const purchaseInvoice = await this.purchaseInvoiceModel.create(
         {
           ...createPurchaseInvoiceDto,
-          status: PurchaseInvoiceStatus.PENDING,
+          approved_by: user.id,
+          approved_at: new Date(),
+          status: PurchaseInvoiceStatus.APPROVED,
           subtotal,
           grandtotal,
           remaining_amount: grandtotal,
@@ -483,5 +488,186 @@ export class PurchaseInvoiceService {
         400,
       );
     }
+  }
+
+  async pdf(id: number, @Res() res, user: User) {
+    try {
+      const purchaseInvoice = await this.purchaseInvoiceModel.findByPk(id, {
+        include: [
+          {
+            association: 'supplier',
+            include: ['user'],
+          },
+          {
+            association: 'purchase_invoice_details',
+            include: ['product'],
+          },
+        ],
+      });
+
+      if (!purchaseInvoice) {
+        return this.response.fail('Purcahse invoice not found', 404);
+      }
+
+      const pdfOptions: PDFOptions = {
+        width: '21cm',
+        height: '29.7cm',
+        printBackground: true,
+        displayHeaderFooter: false,
+        headerTemplate: `
+            <div class="mx-8 flex items-center justify-between border-b border-gray-300 pb-4">
+              <div class="flex items-center space-x-10">
+                <img 
+                  src="https://liszthoven.s3.ap-southeast-1.amazonaws.com/logo-black.png" 
+                  alt="Liszthoven Logo" 
+                  class="w-30" 
+                />
+                <div>
+                  <h1 class="text-lg font-semibold text-gray-800">Liszthoven Music School</h1>
+                  <p class="text-xs text-gray-600">Email: ltv@gmail.com | Site: liszthoven.id</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <h1 class="text-lg font-semibold text-[#053742]">Purchase Invoice</h1>
+                <p class="text-xs text-gray-500">
+                  Created Date: ${moment(purchaseInvoice.createdAt).utcOffset(420).format('YYYY-MM-DD HH:mm')} WIB
+                </p>
+              </div>
+            </div>
+          `,
+        footerTemplate: `
+            <div class="absolute bottom-0 left-0 right-0 px-8">
+              <div class="border-b pt-6 pb-2 text-xs font-semibold text-[#053742] italic text-center">
+                Printed by admin on ${moment().utcOffset(420).format('YYYY-MM-DD HH:mm')} WIB
+              </div>
+              <div class="mt-2 bg-[#053742] py-4 text-center text-sm text-white">
+                <p>Thank you for your trust in Liszthoven Music School</p>
+              </div>
+            </div>
+          `,
+        margin: {
+          top: '30px',
+          bottom: '30px',
+        },
+      };
+
+      const pdf = await PdfHelper.pdf({
+        html: this.purchaseInvoicePdf(
+          purchaseInvoice,
+          pdfOptions.headerTemplate,
+          pdfOptions.footerTemplate,
+        ),
+        pdfOptions: pdfOptions,
+        watermarkImageUrl:
+          'https://liszthoven.id/assets/images/logo/liszthoven-logo.webp',
+      });
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=purchase-invoice-${purchaseInvoice.invoice_no}.pdf`,
+      );
+
+      return res.send(pdf);
+    } catch (error) {
+      return this.response.fail(error, 400);
+    }
+  }
+
+  purchaseInvoicePdf(data: PurchaseInvoice, headerTemplate, footerTemplate) {
+    const formatter = new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+
+    let purchaseInvoiceTr = '';
+    if (data.purchase_invoice_details?.length > 0) {
+      data.purchase_invoice_details.forEach((item) => {
+        purchaseInvoiceTr += `
+            <tr class="border-b border-gray-200">
+              <td class="py-2">${item.product.name}</td>
+              <td class="py-2">${formatter.format(item.unit_price)}</td>
+              <td class="py-2">${item.quantity} Pcs</td>
+              <td class="py-2 text-right">${formatter.format(item.subtotal)}</td>
+            </tr>
+          `;
+      });
+    }
+
+    return `
+      <html>
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+          </head>
+          <body class="relative min-h-screen">
+            ${headerTemplate}
+      <div class="invoice-container relative mx-auto max-w-4xl p-8 pt-2">
+        <div class="relative z-10">
+          <!-- Details -->
+          <div class="grid grid-cols-2 gap-4 py-4 text-sm">
+            <div>
+              <p class="font-semibold text-[#053742]">No. Invoice : ${data.invoice_no}</p>
+              <p>Supplier : ${data.supplier.user.name}</p>
+            </div>
+          </div>
+  
+          <!-- Items Table -->
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-gray-400">
+                <th class="w-2/6 py-2 text-left">ITEM DESCRIPTION</th>
+                <th class="w-2/6 py-2 text-left">UNIT PRICE</th>
+                <th class="w-1/6 py-2 text-left">QTY</th>
+                <th class="w-2/6 py-2 text-right">AMOUNT</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${purchaseInvoiceTr}
+            </tbody>
+          </table>
+  
+          <!-- Totals -->
+          <div class="mt-4 flex items-center justify-between text-sm font-semibold">
+            <span>SUB TOTAL</span>
+            <span class="text-[#053742]">${formatter.format(data.subtotal)}</span>
+          </div>
+           <div class="text-right text-sm font-semibold pt-2">
+            <span>Shipping Cost</span>
+            <span>${formatter.format(data.shipping_cost)}</span>
+          </div>
+          <div class="text-right text-sm font-semibold pt-2">
+            <span>Tax</span>
+            <span>${formatter.format(data.tax)}</span>
+          </div>
+          <div class="mt-4 flex items-center justify-between border-t border-gray-400 py-4 text-base font-semibold">
+            <span>GRAND TOTAL</span>
+            <span class="text-[#053742]">${formatter.format(data.grandtotal)}</span>
+          </div>
+  
+          <!-- Terms & Conditions -->
+          <div class="grid grid-cols-2 gap-4 pt-4 text-sm">
+            <div>
+              <h3 class="font-semibold text-[#053742]">TERMS & CONDITIONS</h3>
+              <p>Items purchased cannot be exchanged or returned.</p>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Signature -->
+        <div class="relative mt-6 flex items-center justify-end text-sm">
+          <div class="relative text-center">
+            <p class="font-semibold">Best Regards</p>
+            <div class="relative mx-auto mt-12 h-16 w-48 border-b-2 border-black">
+              <img src="https://liszthoven.id/assets/images/logo/liszthoven-logo.webp" alt="Liszthoven Stamp" class="top-1/4 bottom-16 h-25 translate-x-14 -translate-y-1/2 opacity-40" />
+            </div>
+            <p class="text-gray-500">Liszthoven Music School</p>
+          </div>
+        </div>
+      </div>${footerTemplate}</body></html>
+      `;
   }
 }

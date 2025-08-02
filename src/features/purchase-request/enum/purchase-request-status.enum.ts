@@ -1,22 +1,19 @@
 enum PurchaseRequestStatus {
-  PENDING = 0,
-  APPROVAL_REQUEST = 1,
-  APPROVED = 2,
-  CANCELLED = 3,
+  NEED_APPROVAL = 0,
+  APPROVED = 1,
+  REJECTED = 2,
 }
 
 export const getPurchaseRequestStatusEnumLabel = (
   purchaseRequestStatus: PurchaseRequestStatus,
 ) => {
   switch (purchaseRequestStatus) {
-    case PurchaseRequestStatus.PENDING:
-      return 'Pending';
-    case PurchaseRequestStatus.APPROVAL_REQUEST:
-      return 'Approval request';
+    case PurchaseRequestStatus.NEED_APPROVAL:
+      return 'Need Approval';
     case PurchaseRequestStatus.APPROVED:
       return 'Approved';
-    case PurchaseRequestStatus.CANCELLED:
-      return 'Cancelled';
+    case PurchaseRequestStatus.REJECTED:
+      return 'Rejected';
     default:
       return 'Unknown';
   }

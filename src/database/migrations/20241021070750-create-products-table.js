@@ -41,14 +41,6 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      // brand_id: {
-      //   type: Sequelize.BIGINT,
-      //   allowNull: false,
-      //   references: {
-      //     model: 'brands',
-      //     key: 'id',
-      //   },
-      // },
       quantity: {
         type: Sequelize.INTEGER,
         defaultValue: 0,

@@ -29,7 +29,8 @@ export class SupplierQuotationDetailService {
     if (!supplierQuotation) {
       return this.response.fail('Supplier quotation not found', 404);
     }
-    if (supplierQuotation.status === SupplierQuotationStatus.CANCELLED) {
+
+    if (supplierQuotation.status === SupplierQuotationStatus.REJECTED) {
       return this.response.fail('Supplier quotation already cancelled', 400);
     }
 
@@ -42,35 +43,23 @@ export class SupplierQuotationDetailService {
 
     if (isProductExists) {
       return this.response.fail(
-        'Product already exists, please use update instead create',
+        'Product already exists, please use update instead of create',
         400,
       );
     }
 
     const transaction = await this.sequelize.transaction();
     try {
-      const total =
-        +createSupplierQuotationDetailDto.price_per_unit *
-        +createSupplierQuotationDetailDto.quantity;
-
-      createSupplierQuotationDetailDto.total = total;
-
-      // Update supplier quotation subtotal and grandtotal
-      await supplierQuotation.update(
-        {
-          subtotal: +supplierQuotation.subtotal + +total,
-          grandtotal: +supplierQuotation.grandtotal + +total,
-        },
-        { transaction: transaction },
-      );
-
       const supplierQuotationDetail =
         await this.supplierQuotationDetailModel.create(
           {
-            ...createSupplierQuotationDetailDto,
+            product_id: createSupplierQuotationDetailDto.product_id,
+            quantity: createSupplierQuotationDetailDto.quantity,
             supplier_quotation_id: supplierQuotationId,
+            price_per_unit: null,
+            total: null,
           },
-          { transaction: transaction },
+          { transaction },
         );
 
       await transaction.commit();
@@ -83,10 +72,11 @@ export class SupplierQuotationDetailService {
           },
         ],
       });
+
       return this.response.success(
         supplierQuotationDetail,
         200,
-        'Successfully create supplier quotation detail',
+        'Successfully created supplier quotation detail',
       );
     } catch (error) {
       await transaction.rollback();
@@ -110,7 +100,7 @@ export class SupplierQuotationDetailService {
       return this.response.fail('Supplier quotation not found', 404);
     }
 
-    if (supplierQuotation.status === SupplierQuotationStatus.CANCELLED) {
+    if (supplierQuotation.status === SupplierQuotationStatus.REJECTED) {
       return this.response.fail('Supplier quotation already cancelled', 400);
     }
 
@@ -128,33 +118,31 @@ export class SupplierQuotationDetailService {
 
     const transaction = await this.sequelize.transaction();
     try {
-      // recalculate all total
       const newTotal =
         +updateSupplierQuotationDetailDto.price_per_unit *
-        updateSupplierQuotationDetailDto.quantity;
+        +updateSupplierQuotationDetailDto.quantity;
 
-      updateSupplierQuotationDetailDto.total = newTotal;
-
-      const grandTotal =
-        +supplierQuotation.grandtotal - +supplierQuotationDetail.total;
-      const subTotal =
-        +supplierQuotation.subtotal - +supplierQuotationDetail.total;
+      // Hitung total pengurang lama
+      const prevTotal = supplierQuotationDetail.total || 0;
 
       await supplierQuotationDetail.update(
         {
-          ...updateSupplierQuotationDetailDto,
+          price_per_unit: updateSupplierQuotationDetailDto.price_per_unit,
+          quantity: updateSupplierQuotationDetailDto.quantity,
           total: newTotal,
         },
-        { transaction: transaction },
+        { transaction },
       );
 
       await supplierQuotation.update(
         {
-          grandtotal: grandTotal + newTotal,
-          subtotal: subTotal + newTotal,
+          grandtotal:
+            (+supplierQuotation.grandtotal || 0) - prevTotal + newTotal,
+          subtotal: (+supplierQuotation.subtotal || 0) - prevTotal + newTotal,
         },
-        { transaction: transaction },
+        { transaction },
       );
+
       await transaction.commit();
 
       await supplierQuotationDetail.reload({
@@ -165,10 +153,11 @@ export class SupplierQuotationDetailService {
           },
         ],
       });
+
       return this.response.success(
         supplierQuotationDetail,
         200,
-        'Successfully update supplier quotation detail',
+        'Successfully updated supplier quotation detail',
       );
     } catch (error) {
       await transaction.rollback();
@@ -187,7 +176,7 @@ export class SupplierQuotationDetailService {
       return this.response.fail('Supplier quotation not found', 404);
     }
 
-    if (supplierQuotation.status === SupplierQuotationStatus.CANCELLED) {
+    if (supplierQuotation.status === SupplierQuotationStatus.REJECTED) {
       return this.response.fail(
         'Supplier quotation status already cancelled',
         400,

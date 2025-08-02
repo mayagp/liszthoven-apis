@@ -1,19 +1,22 @@
 enum SupplierQuotationStatus {
-  PENDING = 0,
-  RECEIVED = 1,
-  CANCELLED = 2,
+  REQUESTED = 0,
+  OFFERED = 1,
+  RECEIVED = 2,
+  REJECTED = 3,
 }
 
 export const getSupplierQuotationStatusEnumLabel = (
   supplierQuotationStatus: SupplierQuotationStatus,
 ) => {
   switch (supplierQuotationStatus) {
-    case SupplierQuotationStatus.PENDING:
-      return 'Pending';
+    case SupplierQuotationStatus.REQUESTED:
+      return 'Requested';
+    case SupplierQuotationStatus.OFFERED:
+      return 'Offered';
     case SupplierQuotationStatus.RECEIVED:
-      return 'Approved';
-    case SupplierQuotationStatus.CANCELLED:
-      return 'Cancelled';
+      return 'Received';
+    case SupplierQuotationStatus.REJECTED:
+      return 'Rejected';
     default:
       return 'Unknown';
   }

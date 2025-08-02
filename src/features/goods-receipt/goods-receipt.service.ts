@@ -221,7 +221,7 @@ export class GoodsReceiptService {
         {
           ...createGoodsReceiptDto,
           supplier_id: purchaseInvoice.supplier_id,
-          status: GoodsReceiptStatusEnum.DRAFT,
+          status: GoodsReceiptStatusEnum.COMPLETED,
         },
         {
           include: [

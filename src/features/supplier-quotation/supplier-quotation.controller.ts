@@ -86,12 +86,12 @@ export class SupplierQuotationController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(':id/cancelled')
-  statusCancelled(
+  @Put(':id/rejected')
+  statusRejected(
     @Param('id', new JoiValidationParamPipe(supplierQuotationIdParamSchema))
     id: string,
   ) {
-    return this.supplierQuotationService.setStatusAsCancelled(+id);
+    return this.supplierQuotationService.setStatusAsRejected(+id);
   }
 
   @UseGuards(JwtAuthGuard)
